@@ -134,6 +134,8 @@ import AdminLogin from "./pages/AdminLogin";
 
 import { db } from "./firebase/db";
 import { auth, ensureAnonAuth } from "./firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
+
 
 import { uploadToCloudinarySigned } from "./utils/cloudinarySignedUpload";
 import { deleteFromCloudinary } from "./utils/cloudinaryDelete";
@@ -154,14 +156,28 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 
+
+
+
+
 export default function App() {
   const [images, setImages] = useState([]);
   const [uploading, setUploading] = useState(false);
+  
+const [isAdmin, setIsAdmin] = useState(false);
 
   // ✅ upload status + thumbnails
   const [uploads, setUploads] = useState([]);
 
-  const isAdmin = !!auth.currentUser;
+  // const isAdmin = !!auth.currentUser;
+  
+useEffect(() => {
+  const unsub = onAuthStateChanged(auth, (user) => {
+    setIsAdmin(!!user);
+  });
+
+  return () => unsub();
+}, []);
 
   // ✅ REALTIME Gallery Sync
   useEffect(() => {
