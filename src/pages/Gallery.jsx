@@ -3,15 +3,12 @@ import PageWrapper from "../components/PageWrapper";
 import ImageCard from "../components/ImageCard";
 import FullscreenPreview from "../components/FullscreenPreview";
 
-export default function Gallery({
-  images = [],     // ✅ default value
-  isAdmin,
-  onDelete,
-  onLike,
-}) {
+export default function Gallery({ images = [], isAdmin, onDelete, onLike }) {
   const [selected, setSelected] = useState(null);
 
-  // ✅ make it safe even if images is null/undefined/object
+  // ✅ SPEED: Only load first 20 images
+  const [limit, setLimit] = useState(20);
+
   const safeImages = Array.isArray(images) ? images : [];
 
   const sortedImages = useMemo(() => {
@@ -19,6 +16,13 @@ export default function Gallery({
       (a, b) => (b.createdAt || 0) - (a.createdAt || 0)
     );
   }, [safeImages]);
+
+  // ✅ Only show limited images
+  const visibleImages = useMemo(() => {
+    return sortedImages.slice(0, limit);
+  }, [sortedImages, limit]);
+
+  const canLoadMore = visibleImages.length < sortedImages.length;
 
   return (
     <PageWrapper>
@@ -34,33 +38,53 @@ export default function Gallery({
             <p>Admin can upload photos.</p>
           </div>
         ) : (
-          <div className="p-grid">
-            {sortedImages.map((img) => (
-              <div key={img.id} className="p-item">
-                <div className="p-card">
-                  <ImageCard
-                    img={img}
-                    onOpen={() => setSelected(img)}
-                    onLike={() => onLike?.(img)}   // ✅ optional safe call
-                  />
-                </div>
+          <>
+            {/* ✅ Pinterest grid */}
+            <div className="p-grid">
+              {visibleImages.map((img) => (
+                <div key={img.id} className="p-item">
+                  <div className="p-card">
+                    <ImageCard
+                      img={img}
+                      onOpen={() => setSelected(img)}
+                      onLike={() => onLike?.(img)}
+                    />
+                  </div>
 
-                {isAdmin && (
-                  <button className="p-delete" onClick={() => onDelete?.(img)}>
-                    Delete
-                  </button>
-                )}
+                  {isAdmin && (
+                    <button className="p-delete" onClick={() => onDelete?.(img)}>
+                      Delete
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* ✅ Load More Button */}
+            {canLoadMore && (
+              <div className="loadmore-wrap">
+                <button
+                  className="loadmore-btn"
+                  onClick={() => setLimit((prev) => prev + 20)}
+                >
+                  Load More (+20)
+                </button>
+
+                <p className="loadmore-text">
+                  Showing <b>{visibleImages.length}</b> of{" "}
+                  <b>{sortedImages.length}</b>
+                </p>
               </div>
-            ))}
-          </div>
+            )}
+          </>
         )}
 
-        {/* ✅ Fullscreen Preview */}
+        {/* ✅ Fullscreen preview */}
         {selected && (
           <FullscreenPreview
             img={selected}
             onClose={() => setSelected(null)}
-            onLike={() => onLike?.(selected)}   // ✅ safe call
+            onLike={() => onLike?.(selected)}
           />
         )}
       </div>
