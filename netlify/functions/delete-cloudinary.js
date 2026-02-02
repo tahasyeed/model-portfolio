@@ -2,8 +2,7 @@ import { v2 as cloudinary } from "cloudinary";
 
 export const handler = async (event) => {
   try {
-    const body = JSON.parse(event.body || "{}");
-    const { publicId } = body;
+    const { publicId } = JSON.parse(event.body || "{}");
 
     if (!publicId) {
       return {
@@ -25,6 +24,7 @@ export const handler = async (event) => {
       body: JSON.stringify({ success: true, result }),
     };
   } catch (err) {
+    console.error("Cloudinary delete error:", err);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: "Cloudinary delete failed" }),
