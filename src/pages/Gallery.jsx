@@ -7,7 +7,7 @@ export default function Gallery({ images = [], isAdmin, onDelete, onLike }) {
   const [selected, setSelected] = useState(null);
 
   // ✅ SPEED: Only load first 20 images
-  const [limit, setLimit] = useState(20);
+  const [limit, setLimit] = useState(10);
 
   const safeImages = Array.isArray(images) ? images : [];
 
