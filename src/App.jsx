@@ -114,9 +114,6 @@
 
 
 
-
-
-
 import React, { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
@@ -133,9 +130,8 @@ import About from "./pages/About";
 import AdminLogin from "./pages/AdminLogin";
 
 import { db } from "./firebase/db";
-import { auth, ensureAnonAuth } from "./firebase/auth";
+import { auth } from "./firebase/auth";
 import { onAuthStateChanged } from "firebase/auth";
-
 
 import { uploadToCloudinarySigned } from "./utils/cloudinarySignedUpload";
 import { deleteFromCloudinary } from "./utils/cloudinaryDelete";
@@ -151,33 +147,25 @@ import {
   updateDoc,
   increment,
   deleteDoc,
-  setDoc,
-  getDoc,
-  serverTimestamp,
 } from "firebase/firestore";
-
-
-
-
 
 export default function App() {
   const [images, setImages] = useState([]);
   const [uploading, setUploading] = useState(false);
-  
-const [isAdmin, setIsAdmin] = useState(false);
+
+  // ✅ reactive admin state
+  const [isAdmin, setIsAdmin] = useState(false);
 
   // ✅ upload status + thumbnails
   const [uploads, setUploads] = useState([]);
 
-  // const isAdmin = !!auth.currentUser;
-  
-useEffect(() => {
-  const unsub = onAuthStateChanged(auth, (user) => {
-    setIsAdmin(!!user);
-  });
-
-  return () => unsub();
-}, []);
+  // ✅ Admin state listener (fix refresh problem)
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (user) => {
+      setIsAdmin(!!user);
+    });
+    return () => unsub();
+  }, []);
 
   // ✅ REALTIME Gallery Sync
   useEffect(() => {
@@ -267,9 +255,7 @@ useEffect(() => {
           url: cloudinaryData.secure_url,
           publicId: cloudinaryData.public_id,
           createdAt: Date.now(),
-
-          likes: 0, // ✅ like counter
-
+          likes: 0,
           format: "webp",
           originalName: file.name,
           originalSizeMB: Number(originalMB),
@@ -297,20 +283,18 @@ useEffect(() => {
   const handleLike = async (img) => {
     try {
       const key = `liked_${img.id}`;
-  
-      // ✅ already liked on this device
+
       if (localStorage.getItem(key)) {
         alert("You already liked this ❤️");
         return;
       }
-  
+
       const ref = doc(db, "photos", img.id);
-  
+
       await updateDoc(ref, {
         likes: increment(1),
       });
-  
-      // ✅ save locally so same device can't like again
+
       localStorage.setItem(key, "true");
     } catch (err) {
       console.error("LIKE FAILED:", err);
@@ -324,12 +308,8 @@ useEffect(() => {
     if (!ok) return;
 
     try {
-      // 1) delete from Cloudinary
       await deleteFromCloudinary(img.publicId);
-
-      // 2) delete Firestore doc
       await deleteDoc(doc(db, "photos", img.id));
-
       alert("Deleted ✅");
     } catch (err) {
       console.error("DELETE FAILED:", err);
@@ -349,7 +329,8 @@ useEffect(() => {
   return (
     <BrowserRouter>
       <div className="app">
-        <Navbar />
+        {/* ✅ pass isAdmin so Navbar updates instantly */}
+        <Navbar isAdmin={isAdmin} />
 
         <main className="container">
           <Routes>
@@ -373,7 +354,7 @@ useEffect(() => {
             <Route
               path="/upload"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute isAdmin={isAdmin}>
                   <Upload
                     onUpload={handleUpload}
                     uploading={uploading}
