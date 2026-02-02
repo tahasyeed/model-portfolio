@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
+import aboutImg from "../assets/094e494e-dcaf-40f1-81e4-0854b1fde836.jpeg";
 
 export default function About() {
   return (
@@ -20,7 +21,8 @@ export default function About() {
           </h2>
 
           <p className="mt-5 text-base sm:text-lg leading-8 text-neutral-700">
-            Hi, I’m <span className="font-extrabold text-neutral-900">Victoria</span> — a
+            Hi, I’m{" "}
+            <span className="font-extrabold text-neutral-900">Victoria</span> — a
             confident BBW model known for bold presence, elegance, and authentic
             beauty. My portfolio reflects passion, creativity, and self-expression
             through professional shoots that highlight style, curves, and energy.
@@ -28,8 +30,8 @@ export default function About() {
 
           <p className="mt-4 text-base sm:text-lg leading-8 text-neutral-700">
             I collaborate with photographers, brands, and creatives for editorial,
-            fashion, lifestyle, and promotional content. Every shoot is crafted with a
-            clean aesthetic and a powerful vibe.
+            fashion, lifestyle, and promotional content. Every shoot is crafted with
+            a clean aesthetic and a powerful vibe.
           </p>
 
           {/* HIGHLIGHTS */}
@@ -43,20 +45,20 @@ export default function About() {
 
             <div className="rounded-2xl border border-black/10 bg-yellow-300 p-4 shadow-sm">
               <p className="font-extrabold text-neutral-900">📸 Work</p>
-              <p className="mt-1 text-sm text-neutral-600  font-bold">
+              <p className="mt-1 text-sm text-neutral-600 font-bold">
                 Editorial • Portfolio • Brand shoots
               </p>
             </div>
 
             <div className="rounded-2xl border border-black/10 bg-red-300 p-4 shadow-sm">
-              <p className="font-extrabold text-neutral-900 ">🤝 Collabs</p>
+              <p className="font-extrabold text-neutral-900">🤝 Collabs</p>
               <p className="mt-1 text-sm text-neutral-600 font-bold">
                 Photographers • Creators • Agencies
               </p>
             </div>
 
             <div className="rounded-2xl border border-black/10 bg-blue-300 p-4 shadow-sm">
-              <p className="font-extrabold text-neutral-900 ">🌍 Location</p>
+              <p className="font-extrabold text-neutral-900">🌍 Location</p>
               <p className="mt-1 text-sm text-neutral-600 font-bold">
                 Available for remote & travel shoots
               </p>
@@ -88,15 +90,13 @@ export default function About() {
           className="relative"
         >
           <div className="rounded-3xl overflow-hidden border border-black/10 shadow-lg">
-            {/* Put your About image here */}
             <img
-              src="./src/assets/094e494e-dcaf-40f1-81e4-0854b1fde836.jpeg"
+              src={aboutImg}
               alt="Model"
               className="w-full h-[520px] object-cover"
             />
           </div>
 
-          {/* Floating badge */}
           <div className="absolute -bottom-6 left-6 right-6 rounded-2xl bg-pink-300 backdrop-blur px-5 py-4 border border-black/10 shadow-md">
             <p className="font-extrabold text-neutral-900">Portfolio</p>
             <p className="text-sm text-neutral-600 mt-1 font-bold">
