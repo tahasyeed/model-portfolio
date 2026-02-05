@@ -43,7 +43,7 @@ export default function Home({ images = [] }) {
           <div>
             <h2 className="latest-title">Latest Uploads</h2>
             <p className="latest-sub">
-              A premium marquee slider that moves smoothly and loops infinitely.
+              You can checkout my latest posts here..
             </p>
           </div>
         </div>
